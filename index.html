@@ -68,7 +68,7 @@
   .stat.clickable:hover{transform:translateY(-1px);box-shadow:0 2px 6px rgba(0,0,0,.08);}
   .stat.active{border-color:var(--accent);background:#cfe4d7;}
   .stat b{display:block;font-size:18px;color:var(--accent);}
-  .stat.risk{background:var(--crit-bg);}
+  .stat.risk{background:#fff;border-left:3px solid var(--crit);}
   .stat.risk b{color:var(--crit);}
   #summaryChart,#riskChart{margin-bottom:20px;border:1px solid #e3e7ec;border-radius:12px;padding:16px 18px;background:#fff;}
   #summaryChart svg,#riskChart svg{width:100%;max-width:900px;height:auto;display:block;background:#fbfcfd;border:1px solid var(--border);border-radius:8px;}
@@ -78,6 +78,13 @@
   .chart-legend .dot2{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none;}
   h3.section-title{margin:28px 0 4px 0;font-size:15px;}
   .intro{font-size:12.5px;color:var(--muted);line-height:1.7;background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:16px;}
+  .intro-collapse{background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:16px;overflow:hidden;}
+  .intro-collapse summary{padding:12px 16px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;user-select:none;list-style:none;}
+  .intro-collapse summary::-webkit-details-marker{display:none;}
+  .intro-collapse summary:hover{color:var(--accent);}
+  .intro-collapse summary::before{content:'▶';display:inline-block;margin-right:8px;font-size:10px;color:var(--muted);transition:transform .15s ease;}
+  .intro-collapse[open] summary::before{transform:rotate(90deg);}
+  .intro-collapse-body{font-size:12.5px;color:var(--muted);line-height:1.7;padding:0 16px 14px;border-top:1px solid var(--border);padding-top:12px;}
   .intro b{color:var(--text);}
   .month-select{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
   .month-select button{padding:6px 14px;border:1px solid var(--border);background:#fff;border-radius:999px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;}
@@ -123,7 +130,7 @@
         </table>
       </div>
     </div>
-    <h3 class="section-title">📝 월별 특이사항 메모 (담당자 작성)</h3>
+    <h3 class="section-title">📝 월별 특이사항 메모</h3>
     <div class="intro" style="margin-bottom:10px;">
       매달 등급 판정의 원인과 특이사항을 담당자가 직접 기록합니다. "예정"(계획된 판촉/입고)만 언급되고 부진·저조 표현이 없는 품목 메모는
       위험품목 탭에서 <span class="badge planned">예정재고</span>로 자동 구분되어 실질 위험 산정에서 제외됩니다 — 다음 달 실제 판촉 결과가
@@ -137,17 +144,20 @@
   <!-- MONTHLY_PANELS_PLACEHOLDER -->
 
   <div class="panel" id="panel-risk">
-    <div class="intro">
-      <b>위험품목 교차분석</b> — 별도로 관리 중인 <b>재고회전율 리포트</b>의 품목별 <b>리드타임·재고커버리지</b> 데이터와, 이 리포트의 <b>재고금액 비중(Top15)</b>을 교차하여
-      "재발주 기간을 감안해도 과도하게 오래 쌓여있는" 품목을 자동으로 식별합니다. 단순 회전율(1개월 스냅샷)이 아니라
-      <b>재고커버리지(현재 재고가 몇 개월치 수요인지) ÷ 리드타임</b> 배수로 판정하므로, 리드타임이 긴 품목(예: 캡슐류 6개월)의
-      정당한 안전재고나 판촉 사이클상 일시적으로 재고를 쌓아두는 대표 상품(예: 슈퍼겔 맥스)을 오탐하지 않습니다.
-      최근 국제정세로 실제 리드타임이 늘어난 점을 감안해 전 품목 공통으로 <b>+<span id="leadBufferWeeks"></span>주 버퍼</b>를 리드타임에 더해서 계산합니다(리드타임 데이터가 없는 품목은 전체 중앙값 <span id="leadMedianWeeks"></span>주로 대체).
-      <br>· <b class="badge crit">핵심위험</b> 재고금액 비중 상위 15위 이내 + 재고커버리지가 (리드타임+버퍼)의 2배 초과
-      &nbsp;&nbsp;· <b class="badge high">위험</b> 상위 15위 이내 + 재고커버리지가 (리드타임+버퍼)의 1.3배 초과(또는 담당자 관심품목 메모 있음)
-      &nbsp;&nbsp;· <b class="badge watch">관찰</b> 상위 16~30위 + 재고커버리지가 (리드타임+버퍼)의 1.3배 초과
-      &nbsp;&nbsp;· <b class="badge planned">예정재고</b> 계산상 위험이지만 담당자 메모에 "판촉/입고 예정"만 있고 부진·저조 언급이 없어 계획된 재고로 판단 → 위험재고금액 집계 제외
-    </div>
+    <details class="intro-collapse">
+      <summary>📋 위험품목 판정 방법 (클릭해서 펼치기)</summary>
+      <div class="intro-collapse-body">
+        <b>위험품목 교차분석</b> — 별도로 관리 중인 <b>재고회전율 리포트</b>의 품목별 <b>리드타임·재고커버리지</b> 데이터와, 이 리포트의 <b>재고금액 비중(Top15)</b>을 교차하여
+        "재발주 기간을 감안해도 과도하게 오래 쌓여있는" 품목을 자동으로 식별합니다. 단순 회전율(1개월 스냅샷)이 아니라
+        <b>재고커버리지(현재 재고가 몇 개월치 수요인지) ÷ 리드타임</b> 배수로 판정하므로, 리드타임이 긴 품목(예: 캡슐류 6개월)의
+        정당한 안전재고나 판촉 사이클상 일시적으로 재고를 쌓아두는 대표 상품(예: 슈퍼겔 맥스)을 오탐하지 않습니다.
+        최근 국제정세로 실제 리드타임이 늘어난 점을 감안해 전 품목 공통으로 <b>+<span id="leadBufferWeeks"></span>주 버퍼</b>를 리드타임에 더해서 계산합니다(리드타임 데이터가 없는 품목은 전체 중앙값 <span id="leadMedianWeeks"></span>주로 대체).
+        <br>· <b class="badge crit">핵심위험</b> 재고금액 비중 상위 15위 이내 + 재고커버리지가 (리드타임+버퍼)의 2배 초과
+        &nbsp;&nbsp;· <b class="badge high">위험</b> 상위 15위 이내 + 재고커버리지가 (리드타임+버퍼)의 1.3배 초과(또는 담당자 관심품목 메모 있음)
+        &nbsp;&nbsp;· <b class="badge watch">관찰</b> 상위 16~30위 + 재고커버리지가 (리드타임+버퍼)의 1.3배 초과
+        &nbsp;&nbsp;· <b class="badge planned">예정재고</b> 계산상 위험이지만 담당자 메모에 "판촉/입고 예정"만 있고 부진·저조 언급이 없어 계획된 재고로 판단 → 위험재고금액 집계 제외
+      </div>
+    </details>
     <div class="stat-row" id="riskStats"></div>
     <div id="riskChart">
       <div class="chart-title">위험품목이 전체 재고금액에서 차지하는 비중 추이</div>
@@ -374,7 +384,12 @@ function renderSummary(){
   const tbody = document.querySelector('#summaryTable tbody');
   const rowsDef = [
     {label:'기말재고금액', get:mk=>fmt(DATA.summary[mk].inv), cls:''},
-    {label:'전월대비 재고 증감률', get:mk=>{const c=DATA.summary[mk].change; return c===null||c===undefined?'-':(c>=0?'▲':'▼')+Math.abs(c*100).toFixed(1)+'%';}, cls:''},
+    {label:'전월대비 재고 증감률', get:mk=>{
+      const c=DATA.summary[mk].change;
+      if (c===null||c===undefined) return '-';
+      const up = c>=0;
+      return `<span style="color:${up?'#c00000':'#1d4ed8'};font-weight:700;">${up?'▲':'▼'} ${Math.abs(c*100).toFixed(1)}%</span>`;
+    }, cls:''},
     {label:'매출액', get:mk=>fmt(DATA.summary[mk].sales), cls:''},
     {label:'매출액 대비 재고금액', get:mk=>fmtPct0(DATA.summary[mk].ratio), cls:'ratio'},
     {label:'등급', get:mk=>`<span class="badge ${gradeClass(DATA.summary[mk].grade)}">${DATA.summary[mk].grade}</span>`, cls:''}
