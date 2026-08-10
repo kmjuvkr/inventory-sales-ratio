@@ -144,9 +144,6 @@
   <!-- MONTHLY_PANELS_PLACEHOLDER -->
 
   <div class="panel" id="panel-risk">
-    <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
-      <a href="https://kmjuvkr.github.io/turnover-coverage/" target="_blank" rel="noopener" class="export-btn" style="text-decoration:none;">↗ 재고회전율 &amp; 커버리지 리포트 바로가기</a>
-    </div>
     <details class="intro-collapse">
       <summary>📋 위험품목 판정 방법 (클릭해서 펼치기)</summary>
       <div class="intro-collapse-body">
@@ -472,6 +469,7 @@ function renderRisk(){
     <div class="stat risk"><b>${monthLabel(mk0)} 위험재고금액</b>${fmt(r0.riskInv)}원</div>
     <div class="stat risk"><b>${DATA.monthKeys.length}개월 내내 위험 판정</b>${full6}개 품목</div>
     <div class="stat risk"><b>상시관리대상(2개월+)</b>${DATA.risk.persistence.length}개 품목</div>
+    <a href="https://kmjuvkr.github.io/turnover-coverage/" target="_blank" rel="noopener" class="export-btn" style="text-decoration:none;margin-left:auto;align-self:center;">↗ 재고회전율 &amp; 커버리지 리포트 바로가기</a>
   `;
   const points = DATA.monthKeys.map(mk => ({x: monthLabel(mk), y: DATA.risk.monthlyRisk[mk].riskShare*100}));
   document.getElementById('riskChartSvg').innerHTML = lineChart(points, {
