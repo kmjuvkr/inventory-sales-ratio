@@ -42,7 +42,7 @@
   tr.top15{background:var(--gray-100);}
   .badge{display:inline-block;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap;}
   .badge.crit{background:var(--red-800);color:#fff;}
-  .badge.high{background:var(--red-600);color:#fff;}
+  .badge.high{background:#ea580c;color:#fff;}
   .badge.watch{background:var(--gray-300);color:var(--gray-800);}
   .badge.planned{background:transparent;color:var(--muted);border:1px solid var(--gray-300);}
   .badge.stable{background:#92d050;color:#375623;}
@@ -208,7 +208,7 @@ function buildTabBar(){
   const bar = document.getElementById('tabBar');
   const tabs = [{id:'summary', label:'연간 요약'}];
   DATA.monthKeys.forEach(mk => tabs.push({id:'m'+mk, label:monthLabel(mk)}));
-  tabs.push({id:'risk', label:'⚠ 재고금액·회전율 위험품목', risk:true});
+  tabs.push({id:'risk', label:'⚠ 위험판정 품목 확인하기', risk:true});
   tabs.forEach((t,i) => {
     const btn = document.createElement('button');
     btn.className = 'tab-btn' + (t.risk ? ' risk-tab' : '') + (i===0?' active':'');
