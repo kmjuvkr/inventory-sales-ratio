@@ -17,7 +17,11 @@
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",-apple-system,sans-serif;background:var(--bg);color:var(--text);}
-  header{background:var(--accent);padding:22px 28px;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px rgba(0,0,0,.15),inset 0 -3px 0 rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.08);}
+  header{background:var(--accent);padding:22px 28px;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px rgba(0,0,0,.15),inset 0 -3px 0 rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;}
+  .header-text{min-width:0;}
+  .header-link{flex:none;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:rgba(255,255,255,.12);color:#fff;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:all .12s ease;}
+  .header-link:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.55);}
+  .header-link svg{width:13px;height:13px;flex:none;}
   header h1{margin:0 0 4px 0;font-size:21px;color:#fff;letter-spacing:.2px;}
   header p{margin:0;color:#bcd9c8;font-size:13px;}
   .tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 28px;background:var(--panel);border-bottom:1px solid var(--border);position:sticky;top:70px;z-index:19;}
@@ -100,8 +104,14 @@
 </head>
 <body>
 <header>
-  <h1>매출액 대비 재고금액 현황 리포트</h1>
-  <p id="genInfo">2026년 1월 ~ 6월 · 재고회전율 리포트 연계 위험품목 분석 포함</p>
+  <div class="header-text">
+    <h1>매출액 대비 재고금액 현황 리포트</h1>
+    <p id="genInfo">2026년 1월 ~ 6월 · 재고회전율 리포트 연계 위험품목 분석 포함</p>
+  </div>
+  <a class="header-link" href="https://kmjuvkr.github.io/turnover-coverage/" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+    재고회전율 &amp; 커버리지 리포트 바로가기
+  </a>
 </header>
 <div class="tabs" id="tabBar"></div>
 <div class="container" id="printRoot">
@@ -469,7 +479,6 @@ function renderRisk(){
     <div class="stat risk"><b>${monthLabel(mk0)} 위험재고금액</b>${fmt(r0.riskInv)}원</div>
     <div class="stat risk"><b>${DATA.monthKeys.length}개월 내내 위험 판정</b>${full6}개 품목</div>
     <div class="stat risk"><b>상시관리대상(2개월+)</b>${DATA.risk.persistence.length}개 품목</div>
-    <a href="https://kmjuvkr.github.io/turnover-coverage/" target="_blank" rel="noopener" class="export-btn" style="text-decoration:none;margin-left:auto;align-self:center;">↗ 재고회전율 &amp; 커버리지 리포트 바로가기</a>
   `;
   const points = DATA.monthKeys.map(mk => ({x: monthLabel(mk), y: DATA.risk.monthlyRisk[mk].riskShare*100}));
   document.getElementById('riskChartSvg').innerHTML = lineChart(points, {
